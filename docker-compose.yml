@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+    webserver:
+        build:
+            context: "./bin/php72"
+        container_name: "php72"
+        restart: "always"
+        ports: 
+            - "8086:80"
+            - "443:443"
+        links: 
+            - database
+        volumes: 
+            - ./www:/var/www/html
+            - ./config/vhosts:/etc/apache2/sites-enabled
+
+    database:
+        build:
+            context: "./bin/mysql"
+        container_name: "database"
+        restart: "always"
+        environment:
+            MYSQL_ROOT_PASSWORD: tiger
+            MYSQL_DATABASE: docker
+            MYSQL_USER: docker
+            MYSQL_PASSWORD: docker
+        volumes: 
+            - ./config/database/project.sql:/docker-entrypoint-initdb.d/project.sql                
